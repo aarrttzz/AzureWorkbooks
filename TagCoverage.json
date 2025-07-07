@@ -1,0 +1,866 @@
+{
+  "version": "Notebook/1.0",
+  "items": [
+    {
+      "type": 1,
+      "content": {
+        "json": "\r\n<div style=\"display:flex; border-bottom:1px solid lightgrey;padding:6px\">\r\n<div style=\"display:flex; width:20%\">\r\n<a href=\"https://www.viacode.com\">\r\n<img src=\"https://www.viacode.com/wp-content/themes/viacode-2-1/assets/img/logo-viacode.svg\" style=\"height:60px;\">\r\n</a>\r\n</div>\r\n<div style=\"display: flex;\r\n    width: 60%;\r\n    align-items: center;\r\n    justify-content: center;\r\n    font-weight: 500;\r\n    font-size: 26px;\">Tag Coverage</div>\r\n<div  style=\"display:flex; width:20%\"></div>\r\n</div>"
+      },
+      "name": "text - 14"
+    },
+    {
+      "type": 9,
+      "content": {
+        "version": "KqlParameterItem/1.0",
+        "crossComponentResources": [
+          "{Subscription}"
+        ],
+        "parameters": [
+          {
+            "id": "c1bfe783-5980-4bf5-9605-a2b519fca1cc",
+            "version": "KqlParameterItem/1.0",
+            "name": "Subscription",
+            "type": 6,
+            "typeSettings": {
+              "additionalResourceOptions": [],
+              "includeAll": false,
+              "showDefault": false
+            },
+            "value": "/subscriptions/102984f5-ad41-42e7-9718-cfe4a2889d28"
+          },
+          {
+            "id": "30ab6642-f100-4582-baa8-59034e213ae5",
+            "version": "KqlParameterItem/1.0",
+            "name": "ResourceTypesNotSupportTagging",
+            "type": 9,
+            "multiSelect": true,
+            "quote": "'",
+            "delimiter": ",",
+            "value": [
+              "microsoft.insights/autoscalesettings",
+              "microsoft.compute/virtualmachines/extensions",
+              "microsoft.web/certificates",
+              "microsoft.operationsmanagement/solutions",
+              "microsoft.network/networkintentpolicies",
+              "microsoft.cdn/profiles/afdendpoints",
+              "microsoft.network/privatednszones/virtualnetworklinks",
+              "microsoft.security/securityconnectors",
+              "microsoft.network/networkwatchers/flowlogs",
+              "microsoft.visualstudio/account",
+              "microsoft.operationalinsights/querypacks",
+              "microsoft.containerregistry/registries/webhooks"
+            ]
+          },
+          {
+            "id": "1138f4c8-59f6-40c6-8c87-6dfd9c3a961c",
+            "version": "KqlParameterItem/1.0",
+            "name": "TagKey",
+            "type": 1,
+            "isHiddenWhenLocked": true
+          },
+          {
+            "version": "KqlParameterItem/1.0",
+            "name": "TagValue",
+            "type": 1,
+            "isHiddenWhenLocked": true,
+            "id": "9b99a3cb-362c-4bba-b0a0-9433e4541323"
+          },
+          {
+            "version": "KqlParameterItem/1.0",
+            "name": "ResourceType",
+            "type": 7,
+            "isHiddenWhenLocked": true,
+            "typeSettings": {
+              "additionalResourceOptions": [],
+              "includeAll": true
+            },
+            "value": null,
+            "id": "64ce8472-dc8c-4e1d-a3eb-24ce832b0638"
+          },
+          {
+            "version": "KqlParameterItem/1.0",
+            "name": "TagKeyWithout",
+            "type": 1,
+            "isHiddenWhenLocked": true,
+            "id": "de6ce0b2-8b4b-4328-b8ed-7d28261d5fff"
+          },
+          {
+            "version": "KqlParameterItem/1.0",
+            "name": "ResourceTypeWithout",
+            "type": 7,
+            "isHiddenWhenLocked": true,
+            "typeSettings": {
+              "additionalResourceOptions": [],
+              "includeAll": true,
+              "showDefault": false
+            },
+            "value": null,
+            "id": "e12097b5-303c-4676-80af-0156b001da6d"
+          },
+          {
+            "id": "0c9efac8-886e-4500-b2de-b2401ef882a0",
+            "version": "KqlParameterItem/1.0",
+            "name": "ResourceCount",
+            "type": 1,
+            "query": "resources\r\n| where type !in ({ResourceTypesNotSupportTagging})\r\n| summarize count()",
+            "crossComponentResources": [
+              "{Subscription}"
+            ],
+            "isHiddenWhenLocked": true,
+            "queryType": 1,
+            "resourceType": "microsoft.resourcegraph/resources"
+          }
+        ],
+        "style": "pills",
+        "queryType": 1,
+        "resourceType": "microsoft.resourcegraph/resources"
+      },
+      "name": "parameters - 1"
+    },
+    {
+      "type": 3,
+      "content": {
+        "version": "KqlItem/1.0",
+        "query": "{\"version\":\"1.0.0\",\"content\":\"{ResourceCount}\",\"transformers\":null}",
+        "size": 4,
+        "queryType": 8,
+        "visualization": "stat",
+        "tileSettings": {
+          "showBorder": false
+        },
+        "statSettings": {
+          "valueAggregation": "None",
+          "colorSettings": {
+            "type": "static",
+            "mode": "background",
+            "heatmapPalette": "greenRed",
+            "thresholdsGrid": []
+          },
+          "iconSettings": {
+            "thresholdsGrid": []
+          },
+          "numberFormatSettings": {
+            "unit": 0,
+            "options": {
+              "style": "decimal"
+            }
+          },
+          "tagText": "Total resources",
+          "valueFontStyle": "xxLarge"
+        }
+      },
+      "customWidth": "25",
+      "name": "Total resources"
+    },
+    {
+      "type": 3,
+      "content": {
+        "version": "KqlItem/1.0",
+        "query": "Resources\r\n| mv-expand TagKey = bag_keys(tags)\r\n| where type !in ({ResourceTypesNotSupportTagging})\r\n| where TagKey !has 'hidden'\r\n| where isnotempty(tags) \r\n| distinct id\r\n| summarize totalTaggedResources = count()",
+        "size": 4,
+        "queryType": 1,
+        "resourceType": "microsoft.resourcegraph/resources",
+        "crossComponentResources": [
+          "{Subscription}"
+        ],
+        "visualization": "stat",
+        "tileSettings": {
+          "showBorder": false
+        },
+        "statSettings": {
+          "valueAggregation": "None",
+          "colorSettings": {
+            "type": "static",
+            "mode": "background",
+            "heatmapPalette": "greenRed",
+            "thresholdsGrid": []
+          },
+          "iconSettings": {
+            "thresholdsGrid": []
+          },
+          "numberFormatSettings": {
+            "unit": 0,
+            "options": {
+              "style": "decimal"
+            }
+          },
+          "tagText": "Tagged resources",
+          "valueFontStyle": "xxLarge"
+        }
+      },
+      "customWidth": "25",
+      "name": "Tagged resources"
+    },
+    {
+      "type": 3,
+      "content": {
+        "version": "KqlItem/1.0",
+        "query": "resources\r\n| where isnotempty(tags)\r\n| mv-expand TagKey = bag_keys(tags)\r\n| where TagKey !has 'hidden'\r\n| summarize resourcesWithTag = count() by tostring(TagKey)\r\n| order by resourcesWithTag desc\r\n| project TagKey, resourcesWithTag, \r\npercentage = round(100.0 * resourcesWithTag / {ResourceCount}, 2)\r\n",
+        "size": 0,
+        "title": "Tag Coverage",
+        "exportFieldName": "TagKey",
+        "exportParameterName": "TagKey",
+        "queryType": 1,
+        "resourceType": "microsoft.resourcegraph/resources",
+        "crossComponentResources": [
+          "{Subscription}"
+        ],
+        "visualization": "table",
+        "gridSettings": {
+          "formatters": [
+            {
+              "columnMatch": "TagKey",
+              "formatter": 1
+            },
+            {
+              "columnMatch": "percentage",
+              "formatter": 8,
+              "formatOptions": {
+                "min": 1,
+                "max": 100,
+                "palette": "blue"
+              },
+              "numberFormat": {
+                "unit": 1,
+                "options": {
+                  "style": "decimal"
+                }
+              }
+            }
+          ],
+          "sortBy": [
+            {
+              "itemKey": "$gen_heatmap_percentage_2",
+              "sortOrder": 2
+            }
+          ],
+          "labelSettings": [
+            {
+              "columnId": "TagKey",
+              "label": "Tag Key"
+            },
+            {
+              "columnId": "resourcesWithTag",
+              "label": "Resources Number"
+            },
+            {
+              "columnId": "percentage",
+              "label": "Percentage"
+            }
+          ]
+        },
+        "sortBy": [
+          {
+            "itemKey": "$gen_heatmap_percentage_2",
+            "sortOrder": 2
+          }
+        ],
+        "statSettings": {
+          "valueAggregation": "None",
+          "colorSettings": {
+            "type": "static",
+            "mode": "background",
+            "heatmapPalette": "greenRed",
+            "thresholdsGrid": []
+          },
+          "iconSettings": {
+            "thresholdsGrid": []
+          },
+          "numberFormatSettings": {
+            "unit": 0,
+            "options": {
+              "currency": "USD",
+              "style": "currency",
+              "useGrouping": true
+            }
+          },
+          "tagText": "Untagged Cost",
+          "valueFontStyle": "auto"
+        }
+      },
+      "customWidth": "50",
+      "name": "Tag Coverage"
+    },
+    {
+      "type": 1,
+      "content": {
+        "json": "\r\n<div style=\"display:flex; border-bottom:1px solid lightgrey;padding:6px\">\r\n<div style=\"display:flex; width:20%\">\r\n\r\n</div>\r\n<div style=\"display: flex;\r\n    width: 60%;\r\n    align-items: center;\r\n    justify-content: center;\r\n    font-weight: 500;\r\n    font-size: 26px;\"> Tagged Resources</div>\r\n<div  style=\"display:flex; width:20%\"></div>\r\n</div>"
+      },
+      "name": "text - 14 - Copy - Copy"
+    },
+    {
+      "type": 3,
+      "content": {
+        "version": "KqlItem/1.0",
+        "query": "resources\r\n| where isnotempty(tags)\r\n| mv-expand TagKey = bag_keys(tags)\r\n| where TagKey !has 'hidden'\r\n| summarize resourcesWithTag = count() by tostring(TagKey)\r\n| order by resourcesWithTag desc\r\n| project TagKey, resourcesWithTag\r\n",
+        "size": 0,
+        "title": "Tag to search",
+        "exportFieldName": "TagKey",
+        "exportParameterName": "TagKey",
+        "queryType": 1,
+        "resourceType": "microsoft.resourcegraph/resources",
+        "crossComponentResources": [
+          "{Subscription}"
+        ],
+        "visualization": "table",
+        "gridSettings": {
+          "formatters": [
+            {
+              "columnMatch": "TagKey",
+              "formatter": 1,
+              "formatOptions": {
+                "customColumnWidthSetting": "25ch"
+              }
+            },
+            {
+              "columnMatch": "resourcesWithTag",
+              "formatter": 0,
+              "formatOptions": {
+                "customColumnWidthSetting": "15ch"
+              }
+            },
+            {
+              "columnMatch": "percentage",
+              "formatter": 8,
+              "formatOptions": {
+                "min": 1,
+                "max": 100,
+                "palette": "blue",
+                "customColumnWidthSetting": "5"
+              },
+              "numberFormat": {
+                "unit": 1,
+                "options": {
+                  "style": "decimal"
+                }
+              }
+            }
+          ],
+          "labelSettings": [
+            {
+              "columnId": "TagKey",
+              "label": "Tag Key"
+            },
+            {
+              "columnId": "resourcesWithTag",
+              "label": "Count"
+            }
+          ]
+        },
+        "statSettings": {
+          "valueAggregation": "None",
+          "colorSettings": {
+            "type": "static",
+            "mode": "background",
+            "heatmapPalette": "greenRed",
+            "thresholdsGrid": []
+          },
+          "iconSettings": {
+            "thresholdsGrid": []
+          },
+          "numberFormatSettings": {
+            "unit": 0,
+            "options": {
+              "currency": "USD",
+              "style": "currency",
+              "useGrouping": true
+            }
+          },
+          "tagText": "Untagged Cost",
+          "valueFontStyle": "auto"
+        }
+      },
+      "customWidth": "25",
+      "name": "Tag to search"
+    },
+    {
+      "type": 3,
+      "content": {
+        "version": "KqlItem/1.0",
+        "query": "resources\r\n| where isnotempty(tags[\"{TagKey}\"])  // Change \"Environment\" to your tag key\r\n| summarize resourcesWithThisValue = count() by TagValue = tostring(tags[\"{TagKey}\"])\r\n| order by resourcesWithThisValue desc",
+        "size": 0,
+        "title": "Tag '{TagKey}' values",
+        "exportFieldName": "TagValue",
+        "exportParameterName": "TagValue",
+        "queryType": 1,
+        "resourceType": "microsoft.resourcegraph/resources",
+        "crossComponentResources": [
+          "{Subscription}"
+        ],
+        "visualization": "table",
+        "gridSettings": {
+          "formatters": [
+            {
+              "columnMatch": "TagValue",
+              "formatter": 0,
+              "formatOptions": {
+                "customColumnWidthSetting": "25ch"
+              }
+            },
+            {
+              "columnMatch": "resourcesWithThisValue",
+              "formatter": 0,
+              "formatOptions": {
+                "customColumnWidthSetting": "15ch"
+              }
+            }
+          ],
+          "labelSettings": [
+            {
+              "columnId": "TagValue",
+              "label": "Tag Value"
+            },
+            {
+              "columnId": "resourcesWithThisValue",
+              "label": "Count"
+            }
+          ]
+        },
+        "statSettings": {
+          "valueAggregation": "None",
+          "colorSettings": {
+            "type": "static",
+            "mode": "background",
+            "heatmapPalette": "greenRed",
+            "thresholdsGrid": []
+          },
+          "iconSettings": {
+            "thresholdsGrid": []
+          },
+          "numberFormatSettings": {
+            "unit": 0,
+            "options": {
+              "currency": "USD",
+              "style": "currency",
+              "useGrouping": true
+            }
+          },
+          "tagText": "Untagged Cost",
+          "valueFontStyle": "auto"
+        }
+      },
+      "customWidth": "25",
+      "name": "Selected tag values"
+    },
+    {
+      "type": 3,
+      "content": {
+        "version": "KqlItem/1.0",
+        "query": "Resources\r\n| where isnotempty(tags[\"{TagKey}\"])\r\n| where tags[\"{TagKey}\"] == \"{TagValue}\"\r\n| summarize resourceCount = count() by type\r\n| order by resourceCount desc\r\n| project ResourceType = type, ResourceCount = resourceCount",
+        "size": 0,
+        "title": "Types with '{TagKey}: {TagValue}'",
+        "exportFieldName": "ResourceType",
+        "exportParameterName": "ResourceType",
+        "queryType": 1,
+        "resourceType": "microsoft.resourcegraph/resources",
+        "crossComponentResources": [
+          "{Subscription}"
+        ],
+        "visualization": "table",
+        "gridSettings": {
+          "formatters": [
+            {
+              "columnMatch": "ResourceType",
+              "formatter": 16,
+              "formatOptions": {
+                "showIcon": true,
+                "customColumnWidthSetting": "25ch"
+              }
+            },
+            {
+              "columnMatch": "ResourceCount",
+              "formatter": 0,
+              "formatOptions": {
+                "customColumnWidthSetting": "15ch"
+              }
+            },
+            {
+              "columnMatch": "type",
+              "formatter": 16,
+              "formatOptions": {
+                "showIcon": true
+              }
+            }
+          ],
+          "sortBy": [
+            {
+              "itemKey": "ResourceCount",
+              "sortOrder": 2
+            }
+          ],
+          "labelSettings": [
+            {
+              "columnId": "ResourceType",
+              "label": "Type"
+            },
+            {
+              "columnId": "ResourceCount",
+              "label": "Count"
+            }
+          ]
+        },
+        "sortBy": [
+          {
+            "itemKey": "ResourceCount",
+            "sortOrder": 2
+          }
+        ],
+        "statSettings": {
+          "valueAggregation": "None",
+          "colorSettings": {
+            "type": "static",
+            "mode": "background",
+            "heatmapPalette": "greenRed",
+            "thresholdsGrid": []
+          },
+          "iconSettings": {
+            "thresholdsGrid": []
+          },
+          "numberFormatSettings": {
+            "unit": 0,
+            "options": {
+              "currency": "USD",
+              "style": "currency",
+              "useGrouping": true
+            }
+          },
+          "tagText": "Untagged Cost",
+          "valueFontStyle": "auto"
+        }
+      },
+      "customWidth": "25",
+      "name": "Types with selected tag-value"
+    },
+    {
+      "type": 3,
+      "content": {
+        "version": "KqlItem/1.0",
+        "query": "Resources\r\n| where tags[\"{TagKey}\"] == \"{TagValue}\"  \r\n| where type == \"{ResourceType}\" \r\n| project id,resourceGroup\r\n",
+        "size": 0,
+        "title": "Has Tag '{TagKey}:{TagValue}' and Type '{ResourceType}'",
+        "exportFieldName": "TagValue",
+        "exportParameterName": "TagValue",
+        "queryType": 1,
+        "resourceType": "microsoft.resourcegraph/resources",
+        "crossComponentResources": [
+          "{Subscription}"
+        ],
+        "visualization": "table",
+        "gridSettings": {
+          "formatters": [
+            {
+              "columnMatch": "id",
+              "formatter": 0,
+              "formatOptions": {
+                "customColumnWidthSetting": "60ch"
+              }
+            },
+            {
+              "columnMatch": "resourceGroup",
+              "formatter": 14,
+              "formatOptions": {
+                "linkTarget": null,
+                "showIcon": true
+              }
+            },
+            {
+              "columnMatch": "name",
+              "formatter": 13,
+              "formatOptions": {
+                "linkTarget": null,
+                "showIcon": true
+              }
+            },
+            {
+              "columnMatch": "type",
+              "formatter": 16,
+              "formatOptions": {
+                "showIcon": true
+              }
+            }
+          ]
+        },
+        "statSettings": {
+          "valueAggregation": "None",
+          "colorSettings": {
+            "type": "static",
+            "mode": "background",
+            "heatmapPalette": "greenRed",
+            "thresholdsGrid": []
+          },
+          "iconSettings": {
+            "thresholdsGrid": []
+          },
+          "numberFormatSettings": {
+            "unit": 0,
+            "options": {
+              "currency": "USD",
+              "style": "currency",
+              "useGrouping": true
+            }
+          },
+          "tagText": "Untagged Cost",
+          "valueFontStyle": "auto"
+        }
+      },
+      "customWidth": "25",
+      "name": "Has tag and type"
+    },
+    {
+      "type": 1,
+      "content": {
+        "json": "\r\n<div style=\"display:flex; border-bottom:1px solid lightgrey;padding:6px\">\r\n<div style=\"display:flex; width:20%\">\r\n\r\n</div>\r\n<div style=\"display: flex;\r\n    width: 60%;\r\n    align-items: center;\r\n    justify-content: center;\r\n    font-weight: 500;\r\n    font-size: 26px;\"> Resources without provided Tag</div>\r\n<div  style=\"display:flex; width:20%\"></div>\r\n</div>"
+      },
+      "name": "text - 14 - Copy"
+    },
+    {
+      "type": 3,
+      "content": {
+        "version": "KqlItem/1.0",
+        "query": "resources\r\n| where isnotempty(tags)\r\n| where type !in ({ResourceTypesNotSupportTagging})\r\n| mv-expand TagKeyWithout = bag_keys(tags)\r\n| where TagKeyWithout !has 'hidden'\r\n| summarize resourcesWithTag = count() by tostring(TagKeyWithout)\r\n| order by resourcesWithTag desc\r\n| project TagKeyWithout, {ResourceCount} - resourcesWithTag\r\n",
+        "size": 0,
+        "title": "Untagged Resources",
+        "exportFieldName": "TagKeyWithout",
+        "exportParameterName": "TagKeyWithout",
+        "queryType": 1,
+        "resourceType": "microsoft.resourcegraph/resources",
+        "crossComponentResources": [
+          "{Subscription}"
+        ],
+        "visualization": "table",
+        "gridSettings": {
+          "formatters": [
+            {
+              "columnMatch": "TagKey",
+              "formatter": 1,
+              "formatOptions": {
+                "customColumnWidthSetting": "25ch"
+              }
+            },
+            {
+              "columnMatch": "resourcesWithTag",
+              "formatter": 0,
+              "formatOptions": {
+                "customColumnWidthSetting": "15ch"
+              }
+            },
+            {
+              "columnMatch": "percentage",
+              "formatter": 8,
+              "formatOptions": {
+                "min": 1,
+                "max": 100,
+                "palette": "blue",
+                "customColumnWidthSetting": "5"
+              },
+              "numberFormat": {
+                "unit": 1,
+                "options": {
+                  "style": "decimal"
+                }
+              }
+            }
+          ],
+          "labelSettings": [
+            {
+              "columnId": "TagKeyWithout",
+              "label": "Tag Key"
+            }
+          ]
+        },
+        "statSettings": {
+          "valueAggregation": "None",
+          "colorSettings": {
+            "type": "static",
+            "mode": "background",
+            "heatmapPalette": "greenRed",
+            "thresholdsGrid": []
+          },
+          "iconSettings": {
+            "thresholdsGrid": []
+          },
+          "numberFormatSettings": {
+            "unit": 0,
+            "options": {
+              "currency": "USD",
+              "style": "currency",
+              "useGrouping": true
+            }
+          },
+          "tagText": "Untagged Cost",
+          "valueFontStyle": "auto"
+        }
+      },
+      "customWidth": "25",
+      "name": "query - 0 - Copy - Copy - Copy"
+    },
+    {
+      "type": 3,
+      "content": {
+        "version": "KqlItem/1.0",
+        "query": "Resources\r\n| where isempty(tags[\"{TagKeyWithout}\"])\r\n| where type !in ({ResourceTypesNotSupportTagging})\r\n| summarize resourceCount = count() by type\r\n| order by resourceCount desc\r\n| project ResourceTypeWithout = type, ResourceCount = resourceCount",
+        "size": 0,
+        "title": "Types without tag '{TagKey}'",
+        "exportFieldName": "ResourceTypeWithout",
+        "exportParameterName": "ResourceTypeWithout",
+        "queryType": 1,
+        "resourceType": "microsoft.resourcegraph/resources",
+        "crossComponentResources": [
+          "{Subscription}"
+        ],
+        "visualization": "table",
+        "gridSettings": {
+          "formatters": [
+            {
+              "columnMatch": "ResourceType",
+              "formatter": 16,
+              "formatOptions": {
+                "showIcon": true,
+                "customColumnWidthSetting": "25ch"
+              }
+            },
+            {
+              "columnMatch": "ResourceCount",
+              "formatter": 0,
+              "formatOptions": {
+                "customColumnWidthSetting": "15ch"
+              }
+            },
+            {
+              "columnMatch": "type",
+              "formatter": 16,
+              "formatOptions": {
+                "showIcon": true
+              }
+            }
+          ],
+          "sortBy": [
+            {
+              "itemKey": "ResourceCount",
+              "sortOrder": 2
+            }
+          ],
+          "labelSettings": [
+            {
+              "columnId": "ResourceTypeWithout",
+              "label": "Resource Type"
+            },
+            {
+              "columnId": "ResourceCount",
+              "label": "Count"
+            }
+          ]
+        },
+        "sortBy": [
+          {
+            "itemKey": "ResourceCount",
+            "sortOrder": 2
+          }
+        ],
+        "statSettings": {
+          "valueAggregation": "None",
+          "colorSettings": {
+            "type": "static",
+            "mode": "background",
+            "heatmapPalette": "greenRed",
+            "thresholdsGrid": []
+          },
+          "iconSettings": {
+            "thresholdsGrid": []
+          },
+          "numberFormatSettings": {
+            "unit": 0,
+            "options": {
+              "currency": "USD",
+              "style": "currency",
+              "useGrouping": true
+            }
+          },
+          "tagText": "Untagged Cost",
+          "valueFontStyle": "auto"
+        }
+      },
+      "customWidth": "25",
+      "name": "Types without tag"
+    },
+    {
+      "type": 3,
+      "content": {
+        "version": "KqlItem/1.0",
+        "query": "Resources\r\n| where isempty(tags[\"{TagKeyWithout}\"])  // Replace with your tag key and value\r\n| where type == \"{ResourceTypeWithout}\"  // Replace with your desired resource type\r\n| project id,resourceGroup\r\n",
+        "size": 0,
+        "title": "Resources without Tag '{TagKey}' and Type = '{ResourceType}'",
+        "exportFieldName": "TagValue",
+        "exportParameterName": "TagValue",
+        "queryType": 1,
+        "resourceType": "microsoft.resourcegraph/resources",
+        "crossComponentResources": [
+          "{Subscription}"
+        ],
+        "visualization": "table",
+        "gridSettings": {
+          "formatters": [
+            {
+              "columnMatch": "id",
+              "formatter": 0,
+              "formatOptions": {
+                "customColumnWidthSetting": "60ch"
+              }
+            },
+            {
+              "columnMatch": "resourceGroup",
+              "formatter": 14,
+              "formatOptions": {
+                "linkTarget": null,
+                "showIcon": true
+              }
+            },
+            {
+              "columnMatch": "name",
+              "formatter": 13,
+              "formatOptions": {
+                "linkTarget": null,
+                "showIcon": true
+              }
+            },
+            {
+              "columnMatch": "type",
+              "formatter": 16,
+              "formatOptions": {
+                "showIcon": true
+              }
+            }
+          ]
+        },
+        "statSettings": {
+          "valueAggregation": "None",
+          "colorSettings": {
+            "type": "static",
+            "mode": "background",
+            "heatmapPalette": "greenRed",
+            "thresholdsGrid": []
+          },
+          "iconSettings": {
+            "thresholdsGrid": []
+          },
+          "numberFormatSettings": {
+            "unit": 0,
+            "options": {
+              "currency": "USD",
+              "style": "currency",
+              "useGrouping": true
+            }
+          },
+          "tagText": "Untagged Cost",
+          "valueFontStyle": "auto"
+        }
+      },
+      "customWidth": "50",
+      "name": "Resources without tag and type"
+    }
+  ],
+  "fallbackResourceIds": [
+    "azure monitor"
+  ],
+  "$schema": "https://github.com/Microsoft/Application-Insights-Workbooks/blob/master/schema/workbook.json"
+}
