@@ -700,7 +700,7 @@
         "version": "KqlItem/1.0",
         "query": "Resources\r\n| where isempty(tags[\"{TagKeyWithout}\"])\r\n| where type !in ({ResourceTypesNotSupportTagging})\r\n| summarize resourceCount = count() by type\r\n| order by resourceCount desc\r\n| project ResourceTypeWithout = type, ResourceCount = resourceCount",
         "size": 0,
-        "title": "Types without tag '{TagKey}'",
+        "title": "Types without tag '{TagKeyWithout}'",
         "exportFieldName": "ResourceTypeWithout",
         "exportParameterName": "ResourceTypeWithout",
         "queryType": 1,
